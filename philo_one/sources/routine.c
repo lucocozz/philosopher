@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 02:21:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/02 14:25:00 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/02 15:14:33 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,11 @@ static int	take_forks(t_philo *philo, t_state *state)
 		pthread_mutex_unlock(&state->forks[i]);
 		return (-1);
 	}
-	do_action(state->start, philo->nb, Take_fork, 0);
-	do_action(state->start, philo->nb, Take_fork, 0);
+	if (state->philos_dead == 0)
+	{
+		do_action(state->time.start, philo->nb, Take_fork, 0);
+		do_action(state->time.start, philo->nb, Take_fork, 0);
+	}
 	return (0);
 }
 
@@ -56,7 +59,8 @@ static void	eat(t_philo *philo, t_state *state)
 {
 	if (take_forks(philo, state) == 0)
 	{
-		do_action(state->start, philo->nb, Eat, state->time.eat);
+		if (state->philos_dead == 0)
+			do_action(state->time.start, philo->nb, Eat, state->time.eat);
 		philo->nb_eat++;
 		philo->last_meal = gettime();
 		put_forks(philo, state);
@@ -71,19 +75,22 @@ void	*routine(void *args)
 	state = ((t_args *)args)->state;
 	philo = ((t_args *)args)->philo;
 	while ((philo->nb_eat < state->max_eat || state->max_eat == 0)
-		&& state->is_dead == 0)
+		&& state->philos_dead == 0)
 	{
 		eat(philo, state);
 		if ((gettime() - philo->last_meal) + state->time.sleep
 			>= (unsigned int)state->time.die)
-			state->is_dead++;
-		else
 		{
-			do_action(state->start, philo->nb, Sleep, state->time.sleep);
-			do_action(state->start, philo->nb, Think, 0);
+			state->philos_dead++;
+			philo->is_dead = 1;
+		}
+		else if (state->philos_dead == 0)
+		{
+			do_action(state->time.start, philo->nb, Sleep, state->time.sleep);
+			do_action(state->time.start, philo->nb, Think, 0);
 		}
 	}
-	if (state->is_dead > 0)
-		do_action(state->start, philo->nb, Die, 0);
+	if (philo->is_dead != 0 && state->philos_dead == 1)
+		do_action(state->time.start, philo->nb, Die, 0);
 	return (NULL);
 }

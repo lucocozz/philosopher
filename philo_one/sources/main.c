@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 14:29:39 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/02 05:00:11 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/02 14:52:06 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ static int	parse_arg(t_state *state, int nb, char **arg)
 	state->time = (t_time){
 		.die = ft_atoi(arg[1]),
 		.eat = ft_atoi(arg[2]),
-		.sleep = ft_atoi(arg[3])
+		.sleep = ft_atoi(arg[3]),
+		.start = gettime()
 	};
 	if (nb == 5)
 		state->max_eat = ft_atoi(arg[4]);
@@ -55,11 +56,11 @@ static int	init_state(t_state *state, int nb, char **arg)
 	{
 		state->philos[i].nb = i;
 		state->philos[i].nb_eat = 0;
+		state->philos[i].is_dead = 0;
 		state->philos[i].last_meal = gettime();
 		pthread_mutex_init(&state->forks[i++], NULL);
 	}
-	state->is_dead = 0;
-	state->start = gettime();
+	state->philos_dead = 0;
 	return (0);
 }
 
