@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 02:21:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/02 14:03:14 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/02 14:25:00 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ static int	take_forks(t_philo *philo, t_state *state)
 		pthread_mutex_unlock(&state->forks[i]);
 		return (-1);
 	}
+	do_action(state->start, philo->nb, Take_fork, 0);
 	do_action(state->start, philo->nb, Take_fork, 0);
 	return (0);
 }
@@ -73,10 +74,14 @@ void	*routine(void *args)
 		&& state->is_dead == 0)
 	{
 		eat(philo, state);
-		do_action(state->start, philo->nb, Sleep, state->time.sleep);
-		do_action(state->start, philo->nb, Think, 0);
-		if (gettime() - philo->last_meal >= (unsigned int)state->time.die)
+		if ((gettime() - philo->last_meal) + state->time.sleep
+			>= (unsigned int)state->time.die)
 			state->is_dead++;
+		else
+		{
+			do_action(state->start, philo->nb, Sleep, state->time.sleep);
+			do_action(state->start, philo->nb, Think, 0);
+		}
 	}
 	if (state->is_dead > 0)
 		do_action(state->start, philo->nb, Die, 0);
