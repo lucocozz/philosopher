@@ -6,13 +6,13 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/01 23:12:08 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/02 13:57:23 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/03 12:49:03 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 
-void	create_philos(t_state *state)
+t_args	*create_philos(t_state *state)
 {
 	int		i;
 	t_args	*args;
@@ -25,7 +25,7 @@ void	create_philos(t_state *state)
 		pthread_create(&state->philos[i].thread, NULL, &routine, &args[i]);
 		i++;
 	}
-	free(args);
+	return (args);
 }
 
 void	join_philos(t_state *state)
@@ -37,13 +37,15 @@ void	join_philos(t_state *state)
 		pthread_join(state->philos[i++].thread, NULL);
 }
 
-void	exit_philos(t_state *state)
+void	exit_philos(t_state *state, t_args *args)
 {
 	int	i;
 
 	i = 0;
+	free(args);
 	if (i < state->nb_philo)
 		pthread_mutex_destroy(&state->forks[i++]);
+	pthread_mutex_destroy(&state->philos_dead.lock);
 	free(state->forks);
 	free(state->philos);
 }

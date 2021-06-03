@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time.c                                             :+:      :+:    :+:   */
+/*   mutex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/06/02 02:24:31 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/03 12:40:06 by lucocozz         ###   ########.fr       */
+/*   Created: 2021/06/03 00:31:26 by lucocozz          #+#    #+#             */
+/*   Updated: 2021/06/03 00:34:44 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 
-int	gettime(void)
+int	read_mutex(t_mutex *mutex)
 {
-	struct timeval	time;
+	int	value;
 
-	if (gettimeofday(&time, NULL) == -1)
-		return (0);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	pthread_mutex_lock(&mutex->lock);
+	value = mutex->value;
+	pthread_mutex_unlock(&mutex->lock);
+	return (value);
 }
 
-void	ft_usleep(int ms)
+void	write_mutex(t_mutex *mutex, int value)
 {
-	int	start;
-
-	start = gettime();
-	while (gettime() - start < ms)
-		usleep(400);
+	pthread_mutex_lock(&mutex->lock);
+	mutex->value = value;
+	pthread_mutex_unlock(&mutex->lock);
 }

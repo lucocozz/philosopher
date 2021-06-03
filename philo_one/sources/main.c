@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 14:29:39 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/02 14:52:06 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/03 12:49:22 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ static int	parse_arg(t_state *state, int nb, char **arg)
 		if (ft_isnumber(arg[i++]) == 0)
 			return (-1);
 	state->nb_philo = ft_atoi(arg[0]);
+	if (state->nb_philo < 2)
+		return (-1);
 	state->time = (t_time){
 		.die = ft_atoi(arg[1]),
 		.eat = ft_atoi(arg[2]),
@@ -54,24 +56,24 @@ static int	init_state(t_state *state, int nb, char **arg)
 	}
 	while (i < state->nb_philo)
 	{
-		state->philos[i].nb = i;
-		state->philos[i].nb_eat = 0;
-		state->philos[i].is_dead = 0;
-		state->philos[i].last_meal = gettime();
+		state->philos[i] = (t_philo){.nb = i, .nb_eat = 0, .is_dead = 0,
+			.last_meal = gettime()};
 		pthread_mutex_init(&state->forks[i++], NULL);
 	}
-	state->philos_dead = 0;
+	pthread_mutex_init(&state->philos_dead.lock, NULL);
+	write_mutex(&state->philos_dead, 0);
 	return (0);
 }
 
 int	main(int argc, char **argv)
 {
 	t_state	state;
+	t_args	*args;
 
 	if (init_state(&state, argc - 1, &argv[1]) == -1)
 		return (EXIT_FAILURE);
-	create_philos(&state);
+	args = create_philos(&state);
 	join_philos(&state);
-	exit_philos(&state);
+	exit_philos(&state, args);
 	return (EXIT_SUCCESS);
 }

@@ -6,15 +6,15 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 02:21:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/02 15:14:33 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/03 12:40:59 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 
-static void	do_action(int start_time, int nb, t_action action, int time)
+static void	do_action(t_state *state, t_philo *philo, t_action action, int time)
 {
-	static char	*events[5] = {
+	static char	*actions[] = {
 		[Take_fork] = "has taken a fork",
 		[Eat] = "is eating",
 		[Sleep] = "is spleeping",
@@ -22,8 +22,12 @@ static void	do_action(int start_time, int nb, t_action action, int time)
 		[Die] = "died"
 	};
 
-	printf("%dms %d %s\n", gettime() - start_time, nb, events[action]);
-	ft_usleep(time);
+	if (!(read_mutex(&state->philos_dead) > 0 && philo->is_dead == 0))
+	{
+		printf("[%d] %d %s\n", gettime() - state->time.start, philo->nb,
+			actions[action]);
+		ft_usleep(time);
+	}
 }
 
 static int	take_forks(t_philo *philo, t_state *state)
@@ -38,11 +42,8 @@ static int	take_forks(t_philo *philo, t_state *state)
 		pthread_mutex_unlock(&state->forks[i]);
 		return (-1);
 	}
-	if (state->philos_dead == 0)
-	{
-		do_action(state->time.start, philo->nb, Take_fork, 0);
-		do_action(state->time.start, philo->nb, Take_fork, 0);
-	}
+	do_action(state, philo, Take_fork, 0);
+	do_action(state, philo, Take_fork, 0);
 	return (0);
 }
 
@@ -59,10 +60,9 @@ static void	eat(t_philo *philo, t_state *state)
 {
 	if (take_forks(philo, state) == 0)
 	{
-		if (state->philos_dead == 0)
-			do_action(state->time.start, philo->nb, Eat, state->time.eat);
-		philo->nb_eat++;
 		philo->last_meal = gettime();
+		do_action(state, philo, Eat, state->time.eat);
+		philo->nb_eat++;
 		put_forks(philo, state);
 	}
 }
@@ -75,22 +75,17 @@ void	*routine(void *args)
 	state = ((t_args *)args)->state;
 	philo = ((t_args *)args)->philo;
 	while ((philo->nb_eat < state->max_eat || state->max_eat == 0)
-		&& state->philos_dead == 0)
+		&& read_mutex(&state->philos_dead) == 0)
 	{
 		eat(philo, state);
-		if ((gettime() - philo->last_meal) + state->time.sleep
-			>= (unsigned int)state->time.die)
+		do_action(state, philo, Sleep, state->time.sleep);
+		do_action(state, philo, Think, 0);
+		if ((gettime() - philo->last_meal) > state->time.die)
 		{
-			state->philos_dead++;
+			write_mutex(&state->philos_dead, 1);
 			philo->is_dead = 1;
 		}
-		else if (state->philos_dead == 0)
-		{
-			do_action(state->time.start, philo->nb, Sleep, state->time.sleep);
-			do_action(state->time.start, philo->nb, Think, 0);
-		}
 	}
-	if (philo->is_dead != 0 && state->philos_dead == 1)
-		do_action(state->time.start, philo->nb, Die, 0);
+	do_action(state, philo, Die, 0);
 	return (NULL);
 }

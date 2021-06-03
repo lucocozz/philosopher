@@ -6,14 +6,15 @@
 #    By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/05/18 14:51:42 by rotrojan          #+#    #+#              #
-#    Updated: 2021/06/02 14:05:02 by lucocozz         ###   ########.fr        #
+#    Updated: 2021/06/03 00:42:31 by lucocozz         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo_one
 
 SRCS =	main.c				ft_isnumber.c				ft_atoi.c			\
-		time.c				routine.c					philos_utils.c
+		time.c				routine.c					philos_utils.c		\
+		mutex.c
 OBJS = $(SRCS:%.c=$(OBJS_DIR)/%.o)
 DEPENDENCIES = $(OBJS:%.o=%.d)
 
