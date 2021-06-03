@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 14:29:39 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/03 12:49:22 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/03 19:42:54 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,14 @@ static int	init_state(t_state *state, int nb, char **arg)
 	}
 	while (i < state->nb_philo)
 	{
-		state->philos[i] = (t_philo){.nb = i, .nb_eat = 0, .is_dead = 0,
+		state->philos[i] = (t_philo){.nb = i, .nb_eat = 0,
 			.last_meal = gettime()};
 		pthread_mutex_init(&state->forks[i++], NULL);
 	}
+	pthread_mutex_init(&state->output.lock, NULL);
 	pthread_mutex_init(&state->philos_dead.lock, NULL);
 	write_mutex(&state->philos_dead, 0);
+	write_mutex(&state->output, 0);
 	return (0);
 }
 

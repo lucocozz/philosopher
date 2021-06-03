@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 02:21:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/03 12:40:59 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/03 20:52:42 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void	do_action(t_state *state, t_philo *philo, t_action action, int time)
 		[Die] = "died"
 	};
 
-	if (!(read_mutex(&state->philos_dead) > 0 && philo->is_dead == 0))
+	if (read_mutex(&state->output) == 0)
 	{
 		printf("[%d] %d %s\n", gettime() - state->time.start, philo->nb,
 			actions[action]);
@@ -80,12 +80,12 @@ void	*routine(void *args)
 		eat(philo, state);
 		do_action(state, philo, Sleep, state->time.sleep);
 		do_action(state, philo, Think, 0);
-		if ((gettime() - philo->last_meal) > state->time.die)
+		if (gettime() - philo->last_meal >= state->time.die)
 		{
+			do_action(state, philo, Die, 0);
 			write_mutex(&state->philos_dead, 1);
-			philo->is_dead = 1;
+			write_mutex(&state->output, 1);
 		}
 	}
-	do_action(state, philo, Die, 0);
 	return (NULL);
 }

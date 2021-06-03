@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 14:24:13 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/03 12:57:56 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/03 19:39:25 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ typedef struct s_philo
 	int				nb;
 	int				nb_eat;
 	int				last_meal;
-	int				is_dead;
 	pthread_t		thread;
 }					t_philo;
 
@@ -56,6 +55,7 @@ typedef struct s_state
 {
 	int				nb_philo;
 	int				max_eat;
+	t_mutex			output;
 	t_mutex			philos_dead;
 	t_time			time;
 	t_philo			*philos;
