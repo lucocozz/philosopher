@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 14:29:39 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/03 19:42:54 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/06 22:07:37 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static int	init_state(t_state *state, int nb, char **arg)
 	pthread_mutex_init(&state->output.lock, NULL);
 	pthread_mutex_init(&state->philos_dead.lock, NULL);
 	write_mutex(&state->philos_dead, 0);
-	write_mutex(&state->output, 0);
+	write_mutex(&state->output, 1);
 	return (0);
 }
 
