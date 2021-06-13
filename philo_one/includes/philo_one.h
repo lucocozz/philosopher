@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 14:24:13 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/07 01:25:40 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/13 15:40:48 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_philo
 	int				nb;
 	int				nb_eat;
 	int				last_meal;
+	pthread_t		die_thread;
 	pthread_t		thread;
 }					t_philo;
 
@@ -79,6 +80,8 @@ int					gettime(void);
 void				ft_usleep(int ms);
 
 //	routine.c
+void				do_action(t_state *state, t_philo *philo, t_action action,
+						int time);
 void				*routine(void *args);
 
 //	philos_utils.c

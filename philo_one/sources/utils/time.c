@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/02 02:24:31 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/03 20:51:02 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/06/09 16:40:48 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ void	ft_usleep(int ms)
 	int	start;
 
 	start = gettime();
-	while (gettime() - start < ms)
-		usleep(400);
+	while (gettime() < ms + start)
+		usleep(100);
 }
