@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 14:29:39 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/13 14:53:28 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/07/05 21:23:56 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ static int	parse_arg(t_state *state, int nb, char **arg)
 		if (ft_isnumber(arg[i++]) == 0)
 			return (-1);
 	state->nb_philo = ft_atoi(arg[0]);
-	if (state->nb_philo < 2)
-		return (-1);
 	state->time = (t_time){
 		.die = ft_atoi(arg[1]),
 		.eat = ft_atoi(arg[2]),

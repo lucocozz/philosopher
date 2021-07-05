@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/01 23:12:08 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/13 15:46:30 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/07/05 21:31:11 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	exit_philos(t_state *state, t_args *args)
 
 	i = 0;
 	free(args);
-	if (i < state->nb_philo)
+	while (i < state->nb_philo)
 		pthread_mutex_destroy(&state->forks[i++]);
 	pthread_mutex_destroy(&state->philos_dead.lock);
 	pthread_mutex_destroy(&state->output.lock);

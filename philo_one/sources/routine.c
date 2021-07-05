@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 02:21:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/06/13 15:49:19 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/07/05 23:08:40 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static void	put_forks(t_philo *philo, t_state *state)
 
 static void	eat(t_philo *philo, t_state *state)
 {
-	if (take_forks(philo, state) == 0)
+	if (state->nb_philo > 1 && take_forks(philo, state) == 0)
 	{
 		philo->last_meal = gettime();
 		do_action(state, philo, Eat, state->time.eat);
