@@ -6,7 +6,7 @@
 /*   By: lucocozz <lucocozz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/26 02:21:05 by lucocozz          #+#    #+#             */
-/*   Updated: 2021/07/05 23:08:40 by lucocozz         ###   ########.fr       */
+/*   Updated: 2021/10/25 15:43:10 by lucocozz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,8 @@ static int	take_forks(t_philo *philo, t_state *state)
 	int	i;
 
 	i = philo->nb;
-	if (pthread_mutex_lock(&state->forks[i]) != 0)
-		return (-1);
-	if (pthread_mutex_lock(&state->forks[(i + 1) % state->nb_philo]) != 0)
-	{
-		pthread_mutex_unlock(&state->forks[i]);
-		return (-1);
-	}
+	pthread_mutex_lock(&state->forks[i]);
+	pthread_mutex_lock(&state->forks[(i + 1) % state->nb_philo]);
 	do_action(state, philo, Take_fork, 0);
 	do_action(state, philo, Take_fork, 0);
 	return (0);
